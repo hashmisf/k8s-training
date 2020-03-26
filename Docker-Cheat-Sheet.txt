@@ -1,0 +1,62 @@
+**************************************************************************************
+				Lab 1 - Docker Lab
+**************************************************************************************
+
+1. Configure the Environment/Download files
+1.1 Execute below command (one by one)
+-------------------------------------------------
+	mkdir app
+
+	cd app
+
+	curl -O https://raw.githubusercontent.com/hashmisf/k8s-training/master/java/demoApp.jar
+
+	curl -O https://raw.githubusercontent.com/hashmisf/k8s-training/master/java/Dockerfile
+
+	cd ..
+
+2. Build an image
+2.1 Build Image
+------------------
+	sudo docker build --tag my-image ./app
+
+2.2 See Build History
+---------------------
+	sudo docker history my-image
+
+2.3 List All Images
+---------------------
+	sudo docker images
+
+2.4 Starting a Docker Container
+-------------------------------
+	sudo docker run -d -p 8090:8080 --name="my-container" my-image
+
+2.5 See Build History
+-------------------------------
+	sudo docker logs my-container
+
+2.6 List all Container
+-------------------------------
+	sudo docker ps
+	sudo docker ps --all
+
+2.7 Run Application through CURL
+-------------------------------
+	curl http://localhost:8090/greeting
+
+2.8 SSH into a running container
+-------------------------------
+	sudo docker exec -it my-container /bin/bash
+	sudo exit
+2.9 Stopping a Container
+-------------------------------
+	sudo docker stop my-container
+
+2.10 Deleting a Container
+-------------------------------
+	sudo docker rm my-container
+
+2.11 Deleting an Image
+-------------------------------
+	sudo docker rmi my-image
