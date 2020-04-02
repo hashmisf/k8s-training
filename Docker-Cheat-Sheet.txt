@@ -48,7 +48,7 @@
 2.8 SSH into a running container
 -------------------------------
 	sudo docker exec -it my-container /bin/bash
-	sudo exit
+	exit
 2.9 Stopping a Container
 -------------------------------
 	sudo docker stop my-container

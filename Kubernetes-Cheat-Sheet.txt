@@ -1,0 +1,162 @@
+**************************************************************************************
+				Lab 1 - Kubernets Lab
+**************************************************************************************
+
+Configure the Environment/Download files
+Execute below command (one by one)
+-------------------------------------------------
+	download git
+	clone repository
+
+-------------------------------------------------
+		POD
+-------------------------------------------------
+1. Deploy Pod
+1.1 Create Pod
+
+	kubectl create -f k8s/mypod.yml
+
+1.2 Get/Describe/View Pod
+
+	kubectl get pods
+
+	kubectl get pods -l app=myapp-pod 
+
+	kubectl describe pod <POD-NAME>
+
+	kubectl logs <POD-NAME>
+
+1.3 Open Terminal to Pod
+
+	kubectl exec -it <POD-NAME> -- /bin/bash
+
+	curl localhost
+
+	exit
+
+1.4 Delete Pod
+
+	kubectl delete pod <POD-NAME>
+
+-------------------------------------------------
+		Replica Set
+-------------------------------------------------
+2. Deploy Replica Set
+2.1 Create Replica Set
+
+	kubectl create -f k8s/myrs.yml
+
+2.2 Get/Describe/View Replica Set
+
+	kubectl get rs
+
+	kubectl get rs -l app=myapp-rs
+
+	kubectl describe rs <ReplicaSet-NAME>
+
+2.3 Delete ReplicaSet
+
+	kubectl delete rs <ReplicaSet-NAME>
+
+-------------------------------------------------
+		Deployment
+-------------------------------------------------
+0. Create Name Space
+
+	kubectl create namespace <Namespace-Name>
+
+3. Deploy Deployment
+3.1 Apply YAML
+
+	kubectl create -f k8s/mydeployment.yaml -n <Namespace-Name>
+
+3.2 Get/Describe/View Pod
+
+	kubectl get deployments -n <Namespace-Name>
+
+	kubectl describe deployments <DEPLOYMENT-NAME>  -n <Namespace-Name>
+
+3.3 Delete Pod (Don’t execute it in lab)
+
+	kubectl delete deployment <DEPLOYMENT-NAME>  -n <Namespace-Name>
+
+	kubectl delete -f k8s/mydeployment.yaml  -n <Namespace-Name>
+
+-------------------------------------------------
+		Config
+-------------------------------------------------
+# View Config
+
+	kubectl config view
+
+# Set Namespace in Context
+
+	kubectl config set-context --current --namespace=<Namespace-Name>
+
+-------------------------------------------------
+		Service
+-------------------------------------------------
+4. Deploy Service
+4.1 Create Service
+
+	kubectl create -f k8s/myservice.yml
+
+4.2 Get/Describe Service
+
+	kubectl get service
+
+	kubectl describe service <SERVICE-NAME>
+
+4.3 Delete Service (Don’t execute it in lab)
+
+	kubectl delete service <SERVICE-NAME>
+
+-------------------------------------------------
+		NetworkPolicy
+-------------------------------------------------
+5. Deploy NetworkPolicy
+5.1 Create Network Policy
+
+	kubectl create -f k8s/mynp.yaml
+
+5.2 Get/Describe NetworkPolicy
+
+	kubectl get NetworkPolicy
+
+	kubectl describe NetworkPolicy <NetworkPolicy>
+
+5.3 Test NetworkPolicy
+
+	kubectl create -f k8s/test-np-pod.yaml
+
+	kubectl exec -it mytest-pod -- /bin/bash
+
+	curl <POD-IP-Address>
+
+	exit
+
+5.4 Delete NetworkPolicy (Don’t execute it in lab)
+
+	kubectl delete NetworkPolicy <NetworkPolicy>
+
+-------------------------------------------------
+		Ingress
+-------------------------------------------------
+6. Deploy Ingress
+6.1 Create Ingress
+
+	kubectl apply -f k8s/myingress.yml
+
+6.2 Get/Describe Ingress
+
+	kubectl get ingress
+
+	kubectl describe ingress <INGRESS-NAME>
+
+6.3 Open Browser and Go to below URL
+
+	https://URL
+
+6.4 Delete Ingress
+
+	kubectl delete ingress <INGRESS-NAME>
