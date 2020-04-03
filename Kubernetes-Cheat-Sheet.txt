@@ -184,27 +184,46 @@ Execute below command (one by one)
 -------------------------------------------------
 		Service Cont.
 -------------------------------------------------
+7.1 Create Service with Load Balancer
 
-kubectl create -f myservice-lb.yaml
+	kubectl create -f myservice-lb.yaml
 
-Open Browser and hit Service EXTERNAL-IP
+7.2 Access application through Browser
+	
+	Open Browser and hit Service EXTERNAL-IP
+
+7.3 Create Service with Load Balancer
+
+	kubectl create -f myservice-np.yaml
+
+7.4 Access application through Browser (May not work if firewall rules are not properly setup for cluster)
+
+	#Get Nodes public ip address and use any one of them	
+	kubectl get nodes -o wide
+
+	#Access application using browser
+	Open Browser and hit Service EXTERNAL-IP
+
 
 -------------------------------------------------
 		General
 -------------------------------------------------
-
-7.1 View all objects in current namespace
+8.1 View all objects in current namespace
 
 	kubectl get all
 
-7.2 View all objects in all namespaces
+8.2 View all objects in all namespaces
 
 	kubectl  get all --all-namespaces
 
-7.3 Delete all objects created out of that file
+8.3 Delete all objects created out of that file
 	
 	kubectl delete -f <file-name>
 
-7.4 Apply/Re-apply file (will not work for all objects e.g. Pod)
+8.4 Apply/Re-apply file (will not work for all objects e.g. Pod)
 	
 	kubectl apply -f <file-name>
+
+8.5 Get all Nodes in Cluster
+
+	kubectl get nodes -o wide
