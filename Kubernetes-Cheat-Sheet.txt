@@ -14,7 +14,7 @@ Execute below command (one by one)
 1. Deploy Pod
 1.1 Create Pod
 
-	kubectl create -f mypod.yml
+	kubectl create -f mypod.yaml
 
 1.2 Get/Describe/View Pod
 
@@ -30,6 +30,10 @@ Execute below command (one by one)
 
 	kubectl exec -it <POD-NAME> -- /bin/bash
 
+	/****You may have to install curl*****/
+	apt update && apt upgrade
+	apt install curl
+	/*************************************/
 	curl localhost
 
 	exit
@@ -44,7 +48,7 @@ Execute below command (one by one)
 2. Deploy Replica Set
 2.1 Create Replica Set
 
-	kubectl create -f myrs.yml
+	kubectl create -f myrs.yaml
 
 2.2 Get/Describe/View Replica Set
 
@@ -64,6 +68,8 @@ Execute below command (one by one)
 0. Create Name Space
 
 	kubectl create namespace <Namespace-Name>
+	
+	kubectl get namespace
 
 3. Deploy Deployment
 3.1 Apply YAML
@@ -99,7 +105,7 @@ Execute below command (one by one)
 4. Deploy Service
 4.1 Create Service
 
-	kubectl create -f myservice.yml
+	kubectl create -f myservice.yaml
 
 4.2 Get/Describe Service
 
@@ -107,7 +113,19 @@ Execute below command (one by one)
 
 	kubectl describe service <SERVICE-NAME>
 
-4.3 Delete Service (Don’t execute it in lab)
+	kubectl get endpoints
+
+4.3 Test Service
+
+	kubectl create -f test-pod.yaml
+
+	kubectl exec -it mytest-pod -- /bin/bash
+
+	wget -O- 10.8.11.226:8000
+
+	wget -O- my-service:8000
+
+4.4 Delete Service (Don’t execute it in lab)
 
 	kubectl delete service <SERVICE-NAME>
 
@@ -127,7 +145,7 @@ Execute below command (one by one)
 
 5.3 Test NetworkPolicy
 
-	kubectl create -f test-np-pod.yaml
+	kubectl create -f test-pod.yaml
 
 	kubectl exec -it mytest-pod -- /bin/bash
 
@@ -145,7 +163,7 @@ Execute below command (one by one)
 6. Deploy Ingress
 6.1 Create Ingress
 
-	kubectl apply -f myingress.yml
+	kubectl apply -f myingress.yaml
 
 6.2 Get/Describe Ingress
 
@@ -160,3 +178,16 @@ Execute below command (one by one)
 6.4 Delete Ingress
 
 	kubectl delete ingress <INGRESS-NAME>
+
+-------------------------------------------------
+		General
+-------------------------------------------------
+
+7.1 View all objects in current namespace
+
+	kubectl get all
+
+7.2 View all objects in all namespaces
+
+	kubectl  get all --all-namespaces
+
