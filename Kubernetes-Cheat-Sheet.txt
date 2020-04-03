@@ -182,6 +182,14 @@ Execute below command (one by one)
 	kubectl delete ingress <INGRESS-NAME>
 
 -------------------------------------------------
+		Service Cont.
+-------------------------------------------------
+
+kubectl create -f myservice-lb.yaml
+
+Open Browser and hit Service EXTERNAL-IP
+
+-------------------------------------------------
 		General
 -------------------------------------------------
 
