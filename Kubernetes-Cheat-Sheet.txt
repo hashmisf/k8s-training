@@ -7,7 +7,7 @@ Execute below command (one by one)
 -------------------------------------------------
 	git clone https://github.com/hashmisf/k8s-training.git
 
-	cd k8s-training/
+	cd k8s-training/k8s-d1/
 -------------------------------------------------
 		POD
 -------------------------------------------------
