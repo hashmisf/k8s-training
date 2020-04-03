@@ -1,5 +1,5 @@
 **************************************************************************************
-				Lab 1 - Kubernets Lab
+				Kubernets Lab
 **************************************************************************************
 
 Configure the Environment/Download files
@@ -21,6 +21,8 @@ Execute below command (one by one)
 	kubectl get pods
 
 	kubectl get pods -l app=myapp-pod 
+
+	kubectl get pod -o wide
 
 	kubectl describe pod <POD-NAME>
 
@@ -119,9 +121,9 @@ Execute below command (one by one)
 
 	kubectl create -f test-pod.yaml
 
-	kubectl exec -it mytest-pod -- /bin/bash
+	kubectl exec -it mytest-pod -- /bin/sh
 
-	wget -O- 10.8.11.226:8000
+	wget -O- <service-cluster-ip>:8000
 
 	wget -O- my-service:8000
 
@@ -147,7 +149,7 @@ Execute below command (one by one)
 
 	kubectl create -f test-pod.yaml
 
-	kubectl exec -it mytest-pod -- /bin/bash
+	kubectl exec -it mytest-pod -- /bin/sh
 
 	curl <POD-IP-Address>
 
@@ -163,7 +165,7 @@ Execute below command (one by one)
 6. Deploy Ingress
 6.1 Create Ingress
 
-	kubectl apply -f myingress.yaml
+	kubectl create-f myingress.yaml
 
 6.2 Get/Describe Ingress
 
@@ -191,3 +193,10 @@ Execute below command (one by one)
 
 	kubectl  get all --all-namespaces
 
+7.3 Delete all objects created out of that file
+	
+	kubectl delete -f <file-name>
+
+7.4 Apply/Re-apply file (will not work for all objects e.g. Pod)
+	
+	kubectl apply -f <file-name>
