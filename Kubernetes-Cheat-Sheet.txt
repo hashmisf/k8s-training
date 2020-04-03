@@ -5,16 +5,16 @@
 Configure the Environment/Download files
 Execute below command (one by one)
 -------------------------------------------------
-	download git
-	clone repository
+	git clone https://github.com/hashmisf/k8s-training.git
 
+	cd k8s-training/
 -------------------------------------------------
 		POD
 -------------------------------------------------
 1. Deploy Pod
 1.1 Create Pod
 
-	kubectl create -f k8s-d1/mypod.yml
+	kubectl create -f mypod.yml
 
 1.2 Get/Describe/View Pod
 
@@ -44,7 +44,7 @@ Execute below command (one by one)
 2. Deploy Replica Set
 2.1 Create Replica Set
 
-	kubectl create -f k8s-d1/myrs.yml
+	kubectl create -f myrs.yml
 
 2.2 Get/Describe/View Replica Set
 
@@ -68,7 +68,7 @@ Execute below command (one by one)
 3. Deploy Deployment
 3.1 Apply YAML
 
-	kubectl create -f k8s-d1/mydeployment.yaml -n <Namespace-Name>
+	kubectl create -f mydeployment.yaml -n <Namespace-Name>
 
 3.2 Get/Describe/View Pod
 
@@ -80,7 +80,7 @@ Execute below command (one by one)
 
 	kubectl delete deployment <DEPLOYMENT-NAME>  -n <Namespace-Name>
 
-	kubectl delete -f k8s-d1/mydeployment.yaml  -n <Namespace-Name>
+	kubectl delete -f mydeployment.yaml  -n <Namespace-Name>
 
 -------------------------------------------------
 		Config
@@ -99,7 +99,7 @@ Execute below command (one by one)
 4. Deploy Service
 4.1 Create Service
 
-	kubectl create -f k8s-d1/myservice.yml
+	kubectl create -f myservice.yml
 
 4.2 Get/Describe Service
 
@@ -117,7 +117,7 @@ Execute below command (one by one)
 5. Deploy NetworkPolicy
 5.1 Create Network Policy
 
-	kubectl create -f k8s-d1/mynp.yaml
+	kubectl create -f mynp.yaml
 
 5.2 Get/Describe NetworkPolicy
 
@@ -127,7 +127,7 @@ Execute below command (one by one)
 
 5.3 Test NetworkPolicy
 
-	kubectl create -f k8s-d1/test-np-pod.yaml
+	kubectl create -f test-np-pod.yaml
 
 	kubectl exec -it mytest-pod -- /bin/bash
 
@@ -145,7 +145,7 @@ Execute below command (one by one)
 6. Deploy Ingress
 6.1 Create Ingress
 
-	kubectl apply -f k8s-d1/myingress.yml
+	kubectl apply -f myingress.yml
 
 6.2 Get/Describe Ingress
 
