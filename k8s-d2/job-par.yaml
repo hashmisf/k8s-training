@@ -3,7 +3,7 @@ kind: Job
 metadata:
   labels:
     run: busybox
-  name: busybox
+  name: job-par
 spec:
   parallelism: 5 # run parallel times
   template:

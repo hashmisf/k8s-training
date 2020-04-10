@@ -3,7 +3,7 @@ kind: Job
 metadata:
   labels:
     run: busybox
-  name: busybox
+  name: job-ad
 spec:
   activeDeadlineSeconds: 15 # terminate the job if it doesn't complete in 15 seconds
   template:

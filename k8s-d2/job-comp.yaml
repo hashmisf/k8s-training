@@ -3,7 +3,7 @@ kind: Job
 metadata:
   labels:
     run: busybox
-  name: busybox
+  name: job-comp
 spec:
   completions: 3 # make it run 3 times, one after the other
   template:
@@ -16,6 +16,6 @@ spec:
       - args:
         - /bin/sh
         - -c
-        - echo hello;sleep 30;echo world
+        - echo hello;sleep 15;echo world
         image: busybox
         name: busybox
