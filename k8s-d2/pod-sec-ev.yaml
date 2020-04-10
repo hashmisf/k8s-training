@@ -10,4 +10,4 @@ spec:
     name: nginx
     envFrom: 
     - secretRef: 
-        name: anotherone # the name of the secret
+        name: mysecret # the name of the secret
