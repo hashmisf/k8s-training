@@ -1,0 +1,13 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  labels:
+    run: nginx
+  name: nginx
+spec:
+  containers:
+  - image: nginx
+    name: nginx
+    envFrom: # different than previous one, that was 'env'
+    - configMapRef: # different from the previous one, was 'configMapKeyRef'
+        name: anotherone # the name of the config map

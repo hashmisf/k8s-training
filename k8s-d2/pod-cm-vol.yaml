@@ -1,0 +1,17 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  labels:
+    run: nginx
+  name: nginx
+spec:
+  volumes: # add a volumes list
+  - name: myvolume # just a name, you'll reference this in the pods
+    configMap:
+      name: cmvolume # name of your configmap
+  containers:
+  - image: nginx
+    name: nginx
+    volumeMounts: # your volume mounts are listed here
+    - name: myvolume # the name that you specified in pod.spec.volumes.name
+      mountPath: /etc/lala # the path inside your container

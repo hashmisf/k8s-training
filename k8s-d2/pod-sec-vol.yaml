@@ -1,0 +1,17 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  labels:
+    run: nginx
+  name: nginx
+spec:
+  volumes: # specify the volumes
+  - name: foo # this name will be used for reference inside the container
+    secret: # we want a secret
+      secretName: mysecret2 # name of the secret - this must already exist on pod creation
+  containers:
+  - image: nginx
+    name: nginx
+    volumeMounts: # our volume mounts
+    - name: foo # name on pod.spec.volumes
+      mountPath: /etc/foo #our mount path

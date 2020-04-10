@@ -1,0 +1,20 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  labels:
+    run: busybox
+  name: busybox
+spec:
+  activeDeadlineSeconds: 15 # terminate the job if it doesn't complete in 15 seconds
+  template:
+    metadata:
+      labels:
+        run: busybox
+    spec:
+      containers:
+      - args:
+        - /bin/sh
+        - -c
+        - echo hello;sleep 30;echo world
+        image: busybox
+        name: busybox

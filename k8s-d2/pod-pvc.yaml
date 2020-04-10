@@ -1,0 +1,21 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  labels:
+    run: busybox
+  name: busybox
+spec:
+  volumes:
+  - name: myvolume
+    persistentVolumeClaim:
+      claimName: mypvc # name of PVC
+  containers:
+  - args:
+    - /bin/sh
+    - -c
+    - sleep 3600
+    image: busybox
+    name: busybox
+    volumeMounts:
+    - name: myvolume
+      mountPath: /etc/foo
