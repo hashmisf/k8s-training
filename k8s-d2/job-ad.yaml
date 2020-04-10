@@ -11,6 +11,7 @@ spec:
       labels:
         run: busybox
     spec:
+      restartPolicy: Never
       containers:
       - args:
         - /bin/sh
