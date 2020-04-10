@@ -1,13 +1,14 @@
 apiVersion: batch/v1beta1
 kind: CronJob
 metadata:
-  name: hello
+  name: mycj
 spec:
   schedule: "*/1 * * * *"
   jobTemplate:
     spec:
       template:
         spec:
+          restartPolicy: Never
           containers:
           - name: hello
             image: busybox
