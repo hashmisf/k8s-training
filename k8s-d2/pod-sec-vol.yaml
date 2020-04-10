@@ -3,7 +3,7 @@ kind: Pod
 metadata:
   labels:
     run: nginx
-  name: nginx
+  name: pod-sec-vol
 spec:
   volumes: # specify the volumes
   - name: foo # this name will be used for reference inside the container

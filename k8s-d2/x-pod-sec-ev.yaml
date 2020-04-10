@@ -3,7 +3,7 @@ kind: Pod
 metadata:
   labels:
     run: nginx
-  name: nginx
+  name: pod-sec-ev
 spec:
   containers:
   - image: nginx

@@ -3,7 +3,7 @@ kind: Pod
 metadata:
   labels:
     run: busybox
-  name: busybox
+  name: pod-pvc
 spec:
   volumes:
   - name: myvolume

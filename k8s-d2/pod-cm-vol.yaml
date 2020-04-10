@@ -3,7 +3,7 @@ kind: Pod
 metadata:
   labels:
     run: nginx
-  name: nginx
+  name: pod-cm-vol
 spec:
   volumes: # add a volumes list
   - name: myvolume # just a name, you'll reference this in the pods
