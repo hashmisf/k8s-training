@@ -1,0 +1,22 @@
+
+
+command to show envionrment variable
+	printenv
+	env
+
+
+
+*job
+*cronjob
+*volume
+*environment
+*configmap
+*secret
+pv
+pvc
+
+
+
+
+
+

@@ -5,9 +5,19 @@
 Configure the Environment/Download files
 Execute below command (one by one)
 -------------------------------------------------
+Day 1
+-----
 	git clone https://github.com/hashmisf/k8s-training.git
 
 	cd k8s-training/k8s-d1/
+
+Day 2
+-----
+	cd k8s-training
+
+	git pull
+
+	cd k8s-d2
 -------------------------------------------------
 		POD
 -------------------------------------------------
@@ -30,12 +40,8 @@ Execute below command (one by one)
 
 1.3 Open Terminal to Pod
 
-	kubectl exec -it <POD-NAME> -- /bin/bash
+	kubectl exec -it <POD-NAME> -- /bin/sh
 
-	/****You may have to install curl*****/
-	apt update && apt upgrade
-	apt install curl
-	/*************************************/
 	curl localhost
 
 	exit
@@ -204,6 +210,178 @@ Execute below command (one by one)
 	#Access application using browser
 	Open Browser and hit Service EXTERNAL-IP
 
+-------------------------------------------------
+		    Volume
+-------------------------------------------------
+8.1 Create a Pod with Empty Volume (Two Container Pod)
+
+	kubectl create -f pod-empty-vol.yaml
+
+8.2 Open a terminal to nginx container and check volume (if pod has more than one container, use -c <container-name>)
+
+	kubectl exec -it empty-vol-pd -c nginx -- /bin/sh 
+	cd /my-volume
+	exit
+
+8.3 Create a PersistentVolume
+
+	kubectl create -f pv.yaml 
+
+	kubectl get pv 
+
+8.4 Create a PersistentVolumeClaim
+
+	kubectl create -f pvc.yaml 
+	
+	kubectl get pvc # will show Status as 'Bound'
+	
+	kubectl get pv # will show Status as 'Bound' as well
+
+8.5 Create a Pod using PersistentVolumeClaim
+
+	kubectl create -f pod-pvc.yaml
+
+	kubectl exec -it pod-pvc -- /bin/sh
+
+	cd /etc/foo
+
+	exit
+
+-------------------------------------------------
+		Job
+-------------------------------------------------
+9.1 Create Job
+	kubectl apply -f job.yaml
+
+9.2 Get/Describe Job, Check Log
+
+	kubectl get jobs,pod
+
+	kubectl logs jobs/busybox
+
+	kubectl describe jobs busybox
+
+9.3 Create Job with activeDeadlineSeconds (terminate job if it doesn't complete in given seconds)
+
+	kubectl apply -f job-ad.yaml
+
+	kubectl get jobs,pod
+
+9.4 Create Job with completions (Run given number of times, one after the other)
+
+	kubectl apply -f job-comp.yaml
+
+	kubectl get jobs,pod
+
+9.5 Create Job with parallelism (Run parallel instances for given number of instances)
+
+	kubectl apply -f job-par.yaml
+
+	kubectl get jobs,pod
+
+9.6 Delete Job
+
+	kubectl delete job <JOB-NAME>
+
+-------------------------------------------------
+		Cron Job
+-------------------------------------------------
+
+10.1 Create Cron Job
+
+	kubectl apply -f cronjob.yaml
+
+10.2 Get/Describe Cron Job
+
+	kubectl get cronjob
+
+	kubectl describe cronjob mycj
+
+10.3 Check log
+
+	 kubectl logs jobs/<JOB-NAME>
+
+10.4 Delete Cron Job
+
+	kubectl delete cronjob mycj
+
+-------------------------------------------------
+		ENV Variable
+-------------------------------------------------
+
+11.1 Create a Pod using Env variables
+
+	kubectl create -f pod-env.yaml
+
+11.2 Execute env command to see container's env variables
+
+	kubectl exec -it pod-env -- env
+
+-------------------------------------------------
+		Secrets
+-------------------------------------------------
+
+Create a secret called mysecret with the values password=mypass
+---------------------------------------------------------------
+kubectl create secret generic mysecret --from-literal=password=mypass
+kubectl get secret 
+kubectl describe secret mysecret
+kubectl get secret mysecret -o yaml
+echo <copy-secret-value-here> | base64 -d # -d for decoding
+
+Create a secret called mysecret2 that gets key/value from a file
+---------------------------------------------------------------
+echo -n admin > username # -n	do not print the trailing newline.
+kubectl create secret generic mysecret2 --from-file=username
+
+kubectl create -f pod-sec-vol.yaml
+kubectl exec -it pod-sec-vol -- /bin/sh
+ls /etc/foo  # shows file username
+cat /etc/foo/username # shows admin
+exit
+
+kubectl create -f pod-sec-ev.yaml
+kubectl exec pod-sec-ev -- env
+
+-------------------------------------------------
+		ConfigMap
+-------------------------------------------------
+
+10.1 Create From Literal
+	kubectl create cm options --from-literal=var5=val5
+	kubectl get cm
+	kubectl describe cm <ConfigMap-Name>
+
+10.2 Create and display a ConfigMap from a file - Use fileName as key and all contents in file becomes a single value
+	echo -e "foo3=lili\nfoo4=lele" > config.txt
+	kubectl create cm configmap2 --from-file=config.txt
+	kubectl get cm configmap2 -o yaml
+
+10.3 Create and display a ConfigMap from a .env file, key and values are read from config file (could be mulitple keys,values)
+	echo -e "var1=val1\n# this is a comment\n\nvar2=val2\n#anothercomment" > config.env
+	kubectl create cm configmap3 --from-env-file=config.env
+	kubectl get cm configmap3 -o yaml
+
+10.4 Create and display a ConfigMap from a file, giving the key 'special’ instead of default filename
+	echo -e "var3=val3\nvar4=val4" > config4.txt
+	kubectl create cm configmap4 --from-file=special=config4.txt
+	kubectl describe cm configmap4
+
+kubectl create -f pod-cm-evf.yaml
+kubectl exec -it pod-cm-evf -- env
+
+
+kubectl create configmap anotherone --from-literal=var6=val6 --from-literal=var7=val7
+kubectl create -f pod-cm-ev.yaml
+kubectl exec -it pod-cm-ev -- env
+
+kubectl create configmap cmvolume --from-literal=var8=val8 --from-literal=var9=val9
+kubectl create -f pod-cm-vol.yaml
+kubectl exec -it pod-cm-vol -- /bin/sh
+cd /etc/lala
+ls # will show var8 var9
+cat var8 # will show val8
+exit
 
 -------------------------------------------------
 		General
@@ -227,3 +405,11 @@ Execute below command (one by one)
 8.5 Get all Nodes in Cluster
 
 	kubectl get nodes -o wide
+
+kubectl explain <pod/rs/deploy/....> --recursive
+
+kubectl explain pod --recursive
+kubectl explain pod.spec --recursive
+kubectl explain pod.spec --recursive
+kubectl explain pod.spec --recursive | grep envFrom -A 10
+kubectl help <get/describe/delete/....>
