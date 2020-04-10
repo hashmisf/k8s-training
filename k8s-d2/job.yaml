@@ -10,7 +10,7 @@ spec:
       labels:
         run: busybox
     spec:
-      restartPolicy: Never
+      restartPolicy: OnFailure
       containers:
       - args:
         - /bin/sh
