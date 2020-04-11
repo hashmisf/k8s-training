@@ -21,7 +21,7 @@ Day 2
 -------------------------------------------------
 		POD
 -------------------------------------------------
-1. Deploy Pod
+
 1.1 Create Pod
 
 	kubectl create -f mypod.yaml
@@ -53,7 +53,7 @@ Day 2
 -------------------------------------------------
 		Replica Set
 -------------------------------------------------
-2. Deploy Replica Set
+
 2.1 Create Replica Set
 
 	kubectl create -f myrs.yaml
@@ -73,24 +73,24 @@ Day 2
 -------------------------------------------------
 		Deployment
 -------------------------------------------------
-0. Create Name Space
+
+3.1 Create Name Space
 
 	kubectl create namespace <Namespace-Name>
 	
 	kubectl get namespace
 
-3. Deploy Deployment
-3.1 Apply YAML
+3.2 Apply YAML
 
 	kubectl create -f mydeployment.yaml -n <Namespace-Name>
 
-3.2 Get/Describe/View Pod
+3.3 Get/Describe/View Pod
 
 	kubectl get deployments -n <Namespace-Name>
 
 	kubectl describe deployments <DEPLOYMENT-NAME>  -n <Namespace-Name>
 
-3.3 Delete Pod (Don’t execute it in lab)
+3.4 Delete Pod (Don’t execute it in lab)
 
 	kubectl delete deployment <DEPLOYMENT-NAME>  -n <Namespace-Name>
 
@@ -110,7 +110,7 @@ Day 2
 -------------------------------------------------
 		Service
 -------------------------------------------------
-4. Deploy Service
+
 4.1 Create Service
 
 	kubectl create -f myservice.yaml
@@ -140,7 +140,7 @@ Day 2
 -------------------------------------------------
 		NetworkPolicy
 -------------------------------------------------
-5. Deploy NetworkPolicy
+
 5.1 Create Network Policy
 
 	kubectl create -f mynp.yaml
@@ -166,43 +166,22 @@ Day 2
 	kubectl delete NetworkPolicy <NetworkPolicy>
 
 -------------------------------------------------
-		Ingress
--------------------------------------------------
-6. Deploy Ingress
-6.1 Create Ingress
-
-	kubectl create-f myingress.yaml
-
-6.2 Get/Describe Ingress
-
-	kubectl get ingress
-
-	kubectl describe ingress <INGRESS-NAME>
-
-6.3 Open Browser and Go to below URL
-
-	https://URL
-
-6.4 Delete Ingress
-
-	kubectl delete ingress <INGRESS-NAME>
-
--------------------------------------------------
 		Service Cont.
 -------------------------------------------------
-7.1 Create Service with Load Balancer
+
+6.1 Create Service with Load Balancer
 
 	kubectl create -f myservice-lb.yaml
 
-7.2 Access application through Browser
+6.2 Access application through Browser
 	
 	Open Browser and hit Service EXTERNAL-IP
 
-7.3 Create Service with Load Balancer
+6.3 Create Service with Load Balancer
 
 	kubectl create -f myservice-np.yaml
 
-7.4 Access application through Browser (May not work if firewall rules are not properly setup for cluster)
+6.4 Access application through Browser (May not work if firewall rules are not properly setup for cluster)
 
 	#Get Nodes public ip address and use any one of them	
 	kubectl get nodes -o wide
@@ -211,8 +190,31 @@ Day 2
 	Open Browser and hit Service EXTERNAL-IP
 
 -------------------------------------------------
+		Ingress
+-------------------------------------------------
+
+7.1 Create Ingress
+
+	kubectl create-f myingress.yaml
+
+7.2 Get/Describe Ingress
+
+	kubectl get ingress
+
+	kubectl describe ingress <INGRESS-NAME>
+
+7.3 Open Browser and Go to below URL
+
+	https://URL
+
+7.4 Delete Ingress
+
+	kubectl delete ingress <INGRESS-NAME>
+
+-------------------------------------------------
 		    Volume
 -------------------------------------------------
+
 8.1 Create a Pod with Empty Volume (Two Container Pod)
 
 	kubectl create -f pod-empty-vol.yaml
@@ -220,7 +222,9 @@ Day 2
 8.2 Open a terminal to nginx container and check volume (if pod has more than one container, use -c <container-name>)
 
 	kubectl exec -it empty-vol-pd -c nginx -- /bin/sh 
+
 	cd /my-volume
+
 	exit
 
 8.3 Create a PersistentVolume
@@ -250,7 +254,9 @@ Day 2
 -------------------------------------------------
 		Job
 -------------------------------------------------
+
 9.1 Create Job
+
 	kubectl apply -f job.yaml
 
 9.2 Get/Describe Job, Check Log
@@ -321,95 +327,153 @@ Day 2
 		Secrets
 -------------------------------------------------
 
-Create a secret called mysecret with the values password=mypass
----------------------------------------------------------------
-kubectl create secret generic mysecret --from-literal=password=mypass
-kubectl get secret 
-kubectl describe secret mysecret
-kubectl get secret mysecret -o yaml
-echo <copy-secret-value-here> | base64 -d # -d for decoding
+12.1 Create a Generic Secret from Literal
 
-Create a secret called mysecret2 that gets key/value from a file
----------------------------------------------------------------
-echo -n admin > username # -n	do not print the trailing newline.
-kubectl create secret generic mysecret2 --from-file=username
+	kubectl create secret generic mysecret --from-literal=password=mypass
 
-kubectl create -f pod-sec-vol.yaml
-kubectl exec -it pod-sec-vol -- /bin/sh
-ls /etc/foo  # shows file username
-cat /etc/foo/username # shows admin
-exit
+12.2 Get/Describe Secret
 
-kubectl create -f pod-sec-ev.yaml
-kubectl exec pod-sec-ev -- env
+	kubectl get secret 
+
+	kubectl describe secret mysecret
+
+12.3 View Secret (Secret is based 64 encoded, use -d for decoding)
+
+	kubectl get secret mysecret -o yaml
+
+	echo <copy-secret-value-here> | base64 -d 
+
+12.4 Create a Secret from a File (-n doesn't print the trailing newline)
+
+	echo -n admin > username 
+
+	kubectl create secret generic mysecret2 --from-file=username
+
+12.5 Create Pod (Get Secret in Volume)
+
+	kubectl create -f pod-sec-vol.yaml
+
+	kubectl exec -it pod-sec-vol -- /bin/sh
+
+	ls /etc/foo  # shows file username
+
+	cat /etc/foo/username # shows admin
+
+	exit
+
+12.6 Create Pod (Get Secret Value in Env Variable)
+
+	kubectl create -f pod-sec-ev.yaml
+
+	kubectl exec pod-sec-ev -- env
 
 -------------------------------------------------
 		ConfigMap
 -------------------------------------------------
 
-10.1 Create From Literal
+13.1 Create ConfigMap from Literal
+
 	kubectl create cm options --from-literal=var5=val5
+
+13.2 Get/Describe ConfigMap 
+
 	kubectl get cm
+
 	kubectl describe cm <ConfigMap-Name>
 
-10.2 Create and display a ConfigMap from a file - Use fileName as key and all contents in file becomes a single value
+13.3 Create ConfigMap from File (Uses fileName as key and all contents in file becomes a single value)
+
 	echo -e "foo3=lili\nfoo4=lele" > config.txt
+
 	kubectl create cm configmap2 --from-file=config.txt
+
 	kubectl get cm configmap2 -o yaml
 
-10.3 Create and display a ConfigMap from a .env file, key and values are read from config file (could be mulitple keys,values)
-	echo -e "var1=val1\n# this is a comment\n\nvar2=val2\n#anothercomment" > config.env
-	kubectl create cm configmap3 --from-env-file=config.env
-	kubectl get cm configmap3 -o yaml
+13.4 Create ConfigMap from File using a Key
 
-10.4 Create and display a ConfigMap from a file, giving the key 'special’ instead of default filename
 	echo -e "var3=val3\nvar4=val4" > config4.txt
-	kubectl create cm configmap4 --from-file=special=config4.txt
+
+	kubectl create cm configmap4 --from-file=myKey=config4.txt
+
 	kubectl describe cm configmap4
 
-kubectl create -f pod-cm-evf.yaml
-kubectl exec -it pod-cm-evf -- env
+13.5 Create ConfigMap from a ENV file (Keys and values are read from env file, could have mulitple keys and values, It ignores comments and blank lines)
 
+	echo -e "var1=val1\n# this is a comment\n\nvar2=val2\n#anothercomment" > config.env
 
-kubectl create configmap anotherone --from-literal=var6=val6 --from-literal=var7=val7
-kubectl create -f pod-cm-ev.yaml
-kubectl exec -it pod-cm-ev -- env
+	kubectl create cm configmap3 --from-env-file=config.env
 
-kubectl create configmap cmvolume --from-literal=var8=val8 --from-literal=var9=val9
-kubectl create -f pod-cm-vol.yaml
-kubectl exec -it pod-cm-vol -- /bin/sh
-cd /etc/lala
-ls # will show var8 var9
-cat var8 # will show val8
-exit
+	kubectl get cm configmap3 -o yaml
+
+13.6 Create Pod (Get ConfigMap Value in Env Variable based on Key)
+
+	kubectl create -f pod-cm-evf.yaml
+
+	kubectl exec -it pod-cm-evf -- env
+
+13.7 Create Pod (Get all ConfigMap Values in Env Variables. Config Map Key becomes Env Variable name)
+
+	kubectl create configmap anotherone --from-literal=var6=val6 --from-literal=var7=val7
+
+	kubectl create -f pod-cm-ev.yaml
+
+	kubectl exec -it pod-cm-ev -- env
+
+13.8 Create Pod (Get all ConfigMap Values in Volume)
+
+	kubectl create configmap cmvolume --from-literal=var8=val8 --from-literal=var9=val9
+
+	kubectl create -f pod-cm-vol.yaml
+
+	kubectl exec -it pod-cm-vol -- /bin/sh
+
+	cd /etc/lala
+
+	ls # will show var8 var9
+
+	cat var8 # will show val8
+
+	exit
 
 -------------------------------------------------
 		General
 -------------------------------------------------
-8.1 View all objects in current namespace
+100.1 View all objects in current namespace
 
 	kubectl get all
 
-8.2 View all objects in all namespaces
+100.2 View all objects in all namespaces
 
 	kubectl  get all --all-namespaces
 
-8.3 Delete all objects created out of that file
+100.3 Delete all objects created out of that file
 	
 	kubectl delete -f <file-name>
 
-8.4 Apply/Re-apply file (will not work for all objects e.g. Pod)
+100.4 Apply/Re-apply file (will not work for all objects e.g. Pod)
 	
 	kubectl apply -f <file-name>
 
-8.5 Get all Nodes in Cluster
+100.5 Get all Nodes in Cluster
 
 	kubectl get nodes -o wide
 
-kubectl explain <pod/rs/deploy/....> --recursive
+100.6 Explain any Kubernetes API object
 
-kubectl explain pod --recursive
-kubectl explain pod.spec --recursive
-kubectl explain pod.spec --recursive
-kubectl explain pod.spec --recursive | grep envFrom -A 10
-kubectl help <get/describe/delete/....>
+	kubectl explain <pod/rs/deploy/....> --recursive
+
+100.7 Explain Pod
+
+	kubectl explain pod --recursive
+
+100.8 Explain Pod's Specification
+
+	kubectl explain pod.spec --recursive
+
+100.9 Explain Pod's Specification and grep usage of envFrom
+
+	kubectl explain pod.spec --recursive | grep envFrom -A 10
+
+100.10 Get help for any Kubernetes command
+
+	kubectl help <get/describe/delete/....>
