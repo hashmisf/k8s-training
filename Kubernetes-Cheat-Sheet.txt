@@ -155,9 +155,11 @@ Day 2
 
 	kubectl create -f test-pod.yaml
 
+	kubectl get pod -o wide
+
 	kubectl exec -it mytest-pod -- /bin/sh
 
-	curl <POD-IP-Address>
+	wget -O- <POD-IP-Address>
 
 	exit
 
@@ -436,6 +438,266 @@ Day 2
 	exit
 
 -------------------------------------------------
+		Deploymment
+-------------------------------------------------
+
+14.1 Create a deployment my-deployment with image nginx:1.7.8, called my-container
+
+	kubectl create -f deployment_ro.yaml
+
+14.2 Check how the deployment rollout is going
+	
+	kubectl rollout status deploy my-deployment
+
+14.3 Update the my-container image to nginx:1.7.9
+
+	kubectl set image deploy my-deployment my-container=nginx:1.7.9
+
+14.4 Check the rollout history, deployment, replicas and pod
+
+	kubectl rollout history deploy my-deployment
+
+	kubectl get deploy my-deployment
+
+	kubectl get rs # check that a new replica set has been created
+
+	kubectl get po
+
+14.5 Undo the latest rollout and verify that new pods have the old image (nginx:1.7.8)
+
+	kubectl rollout undo deploy my-deployment
+
+	kubectl get po # select one 'Running' Pod
+
+	kubectl describe po <POD-NAME> | grep -i image # should be nginx:1.7.8
+
+14.6 Do an on purpose update of the deployment with a wrong image nginx:1.91
+
+	kubectl set image deploy my-deployment my-container=nginx:1.91
+
+	kubectl rollout status deploy my-deployment
+	# or
+	kubectl get po # you'll see 'ErrImagePull'
+
+14.7 Return the deployment to the second revision (number 2) and verify the image is nginx:1.7.9
+
+	kubectl rollout undo deploy my-deployment --to-revision=2
+
+	kubectl describe deploy my-deployment | grep Image:
+
+	kubectl rollout status deploy my-deployment # Everything should be OK
+
+14.8 Check the details of the fourth revision (number 4)
+
+	kubectl rollout history deploy my-deployment --revision=4 # You'll also see the wrong image displayed here
+
+14.9 Pause the rollout of the deployment
+
+	kubectl rollout pause deploy my-deployment
+
+14.10 Update the image to nginx:1.9.1 and check that there's nothing going on, since we paused the rollout
+
+	kubectl set image deploy my-deployment my-container=nginx:1.9.1
+
+	# change the image to nginx:1.9.1
+	kubectl rollout history deploy my-deployment # no new revision
+
+14.11 Resume the rollout and check that the nginx:1.9.1 image has been applied
+
+	kubectl rollout resume deploy my-deployment
+
+	kubectl rollout history deploy my-deployment
+
+	kubectl rollout history deploymy-deployment --revision=6 # insert the number of your latest revision
+
+-------------------------------------------------
+		Labels/Annotations
+-------------------------------------------------
+
+15.1 Create my-nginx Pod and annotate with "description='my description'" value
+
+	kubectl create -f pod-ann.yaml
+
+	kubectl annotate po my-nginx description='my description'
+
+15.2 Check the annotations for pod my-nginx
+
+	kubectl describe po my-nginx | grep -i 'annotations'
+
+15.3 Remove the annotations from pod my-nginx
+
+	kubectl annotate po my-nginx description-
+
+
+15.4 Show all labels of the pods
+
+	kubectl get po --show-labels
+
+15.5 Change the labels of pod 'my-nginx' to be app=v2
+	
+	kubectl label po my-nginx app=v2 --overwrite
+
+15.6 Get the label 'app' for the pods
+
+	kubectl get po -L app
+
+15.7 Remove the 'app' label from the pod my-nginx
+
+	kubectl label po my-nginx app-
+
+-------------------------------------------------
+     Scaling / Horizontal Pod Auto Scaling
+-------------------------------------------------
+
+16.1 Create deployment
+
+	kubectl create -f deployment_ro.yaml
+
+16.2 Scale the deployment to 5 replicas
+
+	kubectl scale deploy nginx --replicas=5
+
+	kubectl get po
+
+	kubectl describe deploy nginx
+
+16.3 Autoscale the deployment, pods between 5 and 10, targeting CPU utilization at 80%
+
+	kubectl autoscale deploy my-hpa --min=5 --max=10 --cpu-percent=80
+
+16.4 Delete the deployment and the horizontal pod autoscaler
+
+	kubectl delete deploy my-deployment
+
+	kubectl delete hpa my-hpa
+
+
+-----------------------------------------------------------
+        Liveness and Readiness Probes/Init Container
+-----------------------------------------------------------
+
+17.1 Create Pod and describe it
+
+	kubectl create -f pod-live.yaml
+
+	kubectl describe po pod-live
+
+17.2 Create Pod and describe it
+
+	kubectl create -f pod-ready.yaml
+
+	kubectl describe po pod-ready
+
+17.3 Create Pod with InitContainer
+
+	kubectl create -f pod-init.yaml
+
+	kubectl get pods
+
+	kubectl logs -c pod-init -p
+
+-------------------------------------------------
+        Kubectl Create/Run
+-------------------------------------------------
+
+18.1 Create a deployment
+
+	kubectl create deploy deploy001 --image=nginx 
+
+	kubectl get deploy
+
+18.2 Create a service that exposes the deployment
+
+	kubectl expose deploy deploy001 --port=8000 --target-port=80
+
+	kubectl get service
+
+18.3 Create a deployment yaml file
+
+	kubectl create deploy deploy001 --image=nginx --dry-run -o yaml > deploy001.yaml
+
+	cat deploy001.yaml
+
+18.4 Create a Pod
+
+	kubectl run nginx001 --image=nginx --restart=Never --env=var1=value1 --label="app=web,tier=backend" --port=80 --expose
+
+	kubectl get po
+
+18.5 Create a Pod YAML
+
+	kubectl run busybox001 --image=busybox --restart=Never --env=var1=value1 --label="app=web,tier=backend" --dry-run -o yaml -- /bin/sh -c 'echo hello world;sleep 6000' > busybox001.yaml
+
+	cat busybox001.yaml
+
+18.6 Create a temp nginx Pod
+
+	kubectl run tmp-nginx002 --image=nginx --rm -it --restart=Never -- wget -O- localhost:80
+
+	kubectl get po
+
+18.7 Create a Job
+
+	kubectl run busybox002 --restart=OnFailure --image=busybox -- /bin/sh -c 'echo hello world;sleep 6000' 
+
+	kubectl get job,pod
+
+18.8 Create a CronJob yaml file
+
+	kubectl run busybox001 --image=busybox --restart=OnFailure --schedule="*/1 * * * *"  --label="app=web,tier=backend" --dry-run -o yaml -- /bin/sh -c 'echo hello world;sleep 6000' > cj.yaml
+
+	cat cj.yaml
+
+-------------------------------------------------
+		ServiceAccounts
+-------------------------------------------------
+
+19.1 See all the service accounts of the cluster in all namespaces
+
+	kubectl get sa --all-namespaces
+
+19.2 Create a new serviceaccount called 'myuser'
+
+	kubectl create sa myuser
+
+19.3 Create an nginx pod that uses 'myuser' as a service account
+
+	kubectl run nginx-sa --image=nginx --restart=Never --serviceaccount=myuser -o yaml --dry-run > pod-sa.yaml
+
+	kubectl apply -f pod-sa.yaml
+
+-------------------------------------------------
+		SecurityContext
+-------------------------------------------------
+
+20.1 Create Pod using SecurityContext with user ID 101
+
+	kubectl create -f pod-sec-contx.yaml
+
+	kubectl get pod
+
+20.1 Create Pod using SecurityContext that has the capabilities "NET_ADMIN", "SYS_TIME" 
+
+	kubectl create -f pod-sec-cap.yaml
+
+	kubectl get pod
+
+
+-------------------------------------------------
+     ResourceQuota/POD Requests and Limits
+-------------------------------------------------
+
+21.1 Create YAML for ResourceQuota with hard limits of 1 CPU, 1G memory and 2 pods
+
+	kubectl create quota myrq --hard=cpu=1,memory=1G,pods=2 --dry-run -o yaml
+
+21.2 Create an nginx pod with requests cpu=100m,memory=256Mi and limits cpu=200m,memory=512Mi
+
+	kubectl run nginx --image=nginx --restart=Never --requests='cpu=100m,memory=256Mi' --limits='cpu=200m,memory=512Mi' --dry-run -o yaml > pod-req-limit.yaml
+
+	cat pod-req-limit.yaml
+
+-------------------------------------------------
 		General
 -------------------------------------------------
 100.1 View all objects in current namespace
@@ -477,3 +739,7 @@ Day 2
 100.10 Get help for any Kubernetes command
 
 	kubectl help <get/describe/delete/....>
+
+100.11 Display Resource (CPU/Memory/Storage) usage of pods
+
+	kubectl top pods
