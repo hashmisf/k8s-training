@@ -1,0 +1,16 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  labels:
+    run: nginx
+  name: pod-live
+spec:
+  containers:
+  - image: nginx
+    name: nginx
+    livenessProbe: 
+      initialDelaySeconds: 5 # start checking after given delay in seconds
+      periodSeconds: 5 # check after every given number of seconds
+      exec:
+        command:
+        - ls
