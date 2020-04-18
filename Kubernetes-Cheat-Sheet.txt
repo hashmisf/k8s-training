@@ -508,7 +508,11 @@ Day 2
 
 	kubectl rollout history deploy my-deployment
 
-	kubectl rollout history deploymy-deployment --revision=6 # insert the number of your latest revision
+	kubectl rollout history deploy my-deployment --revision=6 # insert the number of your latest revision
+
+14.12 Delete all deployment, replicaset, pods, servics
+
+	kubectl delete deploy,rs,po,svc --all
 
 -------------------------------------------------
 		Labels/Annotations
@@ -528,22 +532,29 @@ Day 2
 
 	kubectl annotate po my-nginx description-
 
-
 15.4 Show all labels of the pods
 
 	kubectl get po --show-labels
 
-15.5 Change the labels of pod 'my-nginx' to be app=v2
+15.5 Add new labels to pod 'my-nginx'
+	
+	kubectl label po my-nginx tier=frontend
+
+15.6 Change the labels of pod 'my-nginx' to be app=v2
 	
 	kubectl label po my-nginx app=v2 --overwrite
 
-15.6 Get the label 'app' for the pods
+15.7 Get the label 'app' for the pods
 
 	kubectl get po -L app
 
-15.7 Remove the 'app' label from the pod my-nginx
+15.8 Remove the 'app' label from the pod my-nginx
 
 	kubectl label po my-nginx app-
+
+15.9 Delete all deployment, replicaset, pods, servics
+
+	kubectl delete deploy,rs,po,svc --all
 
 -------------------------------------------------
      Scaling / Horizontal Pod Auto Scaling
@@ -555,22 +566,29 @@ Day 2
 
 16.2 Scale the deployment to 5 replicas
 
-	kubectl scale deploy nginx --replicas=5
+	kubectl scale deploy my-deployment --replicas=5
 
 	kubectl get po
 
-	kubectl describe deploy nginx
+	kubectl describe deploy my-deployment
 
 16.3 Autoscale the deployment, pods between 5 and 10, targeting CPU utilization at 80%
 
-	kubectl autoscale deploy my-hpa --min=5 --max=10 --cpu-percent=80
+	kubectl autoscale deployment my-deployment --min=5 --max=10 --cpu-percent=80
 
-16.4 Delete the deployment and the horizontal pod autoscaler
+16.4 Get all Horizontal Pod Autoscaler
+
+	kubectl get hpa
+
+16.5 Delete the deployment and the horizontal pod autoscaler
 
 	kubectl delete deploy my-deployment
 
-	kubectl delete hpa my-hpa
+	kubectl delete hpa my-deployment
 
+16.6 Delete all deployment, replicaset, pods, servics
+
+	kubectl delete deploy,rs,po,svc --all
 
 -----------------------------------------------------------
         Liveness and Readiness Probes/Init Container
@@ -594,7 +612,11 @@ Day 2
 
 	kubectl get pods
 
-	kubectl logs -c pod-init -p
+	kubectl logs pod-init -c busybox -f
+
+17.4 Delete all deployment, replicaset, pods, servics
+
+	kubectl delete deploy,rs,po,svc --all
 
 -------------------------------------------------
         Kubectl Create/Run
@@ -606,47 +628,55 @@ Day 2
 
 	kubectl get deploy
 
-18.2 Create a service that exposes the deployment
+18.2 Edit the deployment to add replicas: 3 and containerPort=80
+
+	kubectl edit deploy deploy001
+
+18.3 Create a service that exposes the deployment
 
 	kubectl expose deploy deploy001 --port=8000 --target-port=80
 
 	kubectl get service
 
-18.3 Create a deployment yaml file
+18.4 Create a deployment yaml file
 
-	kubectl create deploy deploy001 --image=nginx --dry-run -o yaml > deploy001.yaml
+	kubectl create deploy deploy001 --image=nginx --dry-run=client -o yaml > deploy001.yaml
 
 	cat deploy001.yaml
 
-18.4 Create a Pod
+18.5 Create a Pod
 
-	kubectl run nginx001 --image=nginx --restart=Never --env=var1=value1 --label="app=web,tier=backend" --port=80 --expose
+	kubectl run nginx001 --image=nginx --restart=Never --env=var1=value1 --labels="app=web,tier=backend" --port=80 --expose
 
-	kubectl get po
+	kubectl get po,svc
 
-18.5 Create a Pod YAML
+18.6 Create a Pod YAML
 
-	kubectl run busybox001 --image=busybox --restart=Never --env=var1=value1 --label="app=web,tier=backend" --dry-run -o yaml -- /bin/sh -c 'echo hello world;sleep 6000' > busybox001.yaml
+	kubectl run busybox001 --image=busybox --restart=Never --env=var1=value1 --labels="app=web,tier=backend" --dry-run=client -o yaml -- /bin/sh -c 'echo hello world;sleep 6000' > busybox001.yaml
 
 	cat busybox001.yaml
 
-18.6 Create a temp nginx Pod
+18.7 Create a temp nginx Pod
 
-	kubectl run tmp-nginx002 --image=nginx --rm -it --restart=Never -- wget -O- localhost:80
+	kubectl run tmp-bash002 --image=bash --rm -it --restart=Never -- /bin/sh -c 'wget -O- www.google.com'
 
 	kubectl get po
 
-18.7 Create a Job
+18.8 Create a Job
 
-	kubectl run busybox002 --restart=OnFailure --image=busybox -- /bin/sh -c 'echo hello world;sleep 6000' 
+	kubectl create job busybox002 --image=busybox -- /bin/sh -c 'echo hello;sleep 15;echo world'
 
 	kubectl get job,pod
 
-18.8 Create a CronJob yaml file
+18.9 Create a CronJob yaml file
 
-	kubectl run busybox001 --image=busybox --restart=OnFailure --schedule="*/1 * * * *"  --label="app=web,tier=backend" --dry-run -o yaml -- /bin/sh -c 'echo hello world;sleep 6000' > cj.yaml
+	kubectl create cronjob busybox001 --image=busybox --schedule="*/1 * * * *" --dry-run=client -o yaml -- /bin/sh -c 'echo hello world;sleep 6000' > cj.yaml
 
 	cat cj.yaml
+
+18.10 Delete all deployment, replicaset, pods, servics
+
+	kubectl delete deploy,rs,po,svc --all
 
 -------------------------------------------------
 		ServiceAccounts
@@ -662,9 +692,15 @@ Day 2
 
 19.3 Create an nginx pod that uses 'myuser' as a service account
 
-	kubectl run nginx-sa --image=nginx --restart=Never --serviceaccount=myuser -o yaml --dry-run > pod-sa.yaml
+	kubectl run nginx-sa --image=nginx --restart=Never --serviceaccount=myuser -o yaml --dry-run=client > pod-sa.yaml
+
+	cat pod-sa.yaml
 
 	kubectl apply -f pod-sa.yaml
+
+15.9 Delete all deployment, replicaset, pods, servics
+
+	kubectl delete deploy,rs,po,svc --all
 
 -------------------------------------------------
 		SecurityContext
@@ -682,6 +718,9 @@ Day 2
 
 	kubectl get pod
 
+15.9 Delete all deployment, replicaset, pods, servics
+
+	kubectl delete deploy,rs,po,svc --all
 
 -------------------------------------------------
      ResourceQuota/POD Requests and Limits
@@ -689,13 +728,17 @@ Day 2
 
 21.1 Create YAML for ResourceQuota with hard limits of 1 CPU, 1G memory and 2 pods
 
-	kubectl create quota myrq --hard=cpu=1,memory=1G,pods=2 --dry-run -o yaml
+	kubectl create quota myrq --hard=cpu=1,memory=1G,pods=2 --dry-run=client -o yaml
 
 21.2 Create an nginx pod with requests cpu=100m,memory=256Mi and limits cpu=200m,memory=512Mi
 
-	kubectl run nginx --image=nginx --restart=Never --requests='cpu=100m,memory=256Mi' --limits='cpu=200m,memory=512Mi' --dry-run -o yaml > pod-req-limit.yaml
+	kubectl run nginx --image=nginx --restart=Never --requests='cpu=100m,memory=256Mi' --limits='cpu=200m,memory=512Mi' --dry-run=client -o yaml > pod-req-limit.yaml
 
 	cat pod-req-limit.yaml
+
+15.9 Delete all deployment, replicaset, pods, servics
+
+	kubectl delete deploy,rs,po,svc --all
 
 -------------------------------------------------
 		General

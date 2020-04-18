@@ -8,9 +8,17 @@ spec:
   securityContext: # Pod level, applicable to all containers
     runAsUser: 101 # UID for the user
   containers:
-  - image: nginx
-    name: nginx1
-  - image: nginx
-    name: nginx2
+  - image: busybox
+    name: busybox1
+    args:
+      - /bin/sh
+      - -c
+      - sleep 3000
+  - image: busybox
+    name: busybox2
+    args:
+      - /bin/sh
+      - -c
+      - sleep 3000
     securityContext: # Container level, only applicable to this container
       runAsUser: 99 # UID for the user
