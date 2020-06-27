@@ -179,7 +179,7 @@ Day 2
 	
 	Open Browser and hit Service EXTERNAL-IP
 
-6.3 Create Service with Load Balancer
+6.3 Create Service with NodePort
 
 	kubectl create -f myservice-np.yaml
 
@@ -323,7 +323,7 @@ Day 2
 
 11.2 Execute env command to see container's env variables
 
-	kubectl exec -it pod-env -- env
+	kubectl exec pod-env -- env
 
 -------------------------------------------------
 		Secrets
