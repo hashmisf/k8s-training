@@ -526,7 +526,7 @@ Day 2
 
 15.2 Check the annotations for pod my-nginx
 
-	kubectl describe po my-nginx | grep -i 'annotations'
+	kubectl describe po my-nginx | grep -i 'annotations' -A 6
 
 15.3 Remove the annotations from pod my-nginx
 
@@ -686,11 +686,15 @@ Day 2
 
 	kubectl get sa --all-namespaces
 
-19.2 Create a new serviceaccount called 'myuser'
+19.2 See all the service accounts in current namespaces
+
+	kubectl get sa
+
+19.3 Create a new serviceaccount called 'myuser'
 
 	kubectl create sa myuser
 
-19.3 Create an nginx pod that uses 'myuser' as a service account
+19.4 Create an nginx pod that uses 'myuser' as a service account
 
 	kubectl run nginx-sa --image=nginx --serviceaccount=myuser -o yaml --dry-run=client > pod-sa.yaml
 
@@ -698,7 +702,7 @@ Day 2
 
 	kubectl apply -f pod-sa.yaml
 
-15.9 Delete all deployment, replicaset, pods, servics
+19.5 Delete all deployment, replicaset, pods, servics
 
 	kubectl delete deploy,rs,po,svc --all
 

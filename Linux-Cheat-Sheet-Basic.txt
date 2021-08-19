@@ -1,0 +1,66 @@
+#show help/usage
+<command> --help
+
+# present working directory
+pwd
+
+#change the current directory
+cd /		#change to root directory
+cd ~		#change to home directory
+cd /usr/sbin	#change to given absolute directory
+cd .		#no change as . represents current directory
+cd ..		#change to parent directory as .. represents parent directory
+cd app		#change to relative directory 
+
+#create new directory
+mkdir directoryName
+
+#delete empty directory
+rmdir directoryName
+
+#list the contents of the current working directory
+ls	
+ls -a	#include hidden files
+ls -t   #sort by modification time, newest first
+ls -l	#long listing format
+ls -R   #list subdirectories recursively
+
+# display line of text/string
+echo "Hello World" 		#fixed string
+echo $PATH 			#enviornmental variable
+echo "Hello World" > fileName	#output redirection (create/overwrite file)
+echo "Hello World" >> fileName	#output redirection (Append)
+
+#create an empty file
+touch fileName
+
+#display the contents of the file
+cat fileName
+
+#copy files and directories
+cp source target
+
+#move files and directories
+mv source target
+
+#remove files and directories
+rm name
+rm -rf name #recursive force to delete directory
+
+#command line tool to transfer data to or from a server, using any of the supported protocols (HTTP, FTP, IMAP, POP3, SCP, SFTP, SMTP, TFTP, TELNET, LDAP or FILE)
+curl url
+curl -O	uri #download file
+
+#download file using HTTP, HTTPS, and FTP protocols 
+wget url #download file
+wget -O- url/uri #show downloaded contents on console
+
+#environment variable
+export variableName="variableValue" 	#set variable
+echo $variableName 			#use variable
+
+#useful links
+https://www.funtoo.org/Linux_Fundamentals,_Part_1
+https://www.funtoo.org/Linux_Fundamentals,_Part_2
+https://www.funtoo.org/Linux_Fundamentals,_Part_3
+https://www.funtoo.org/Linux_Fundamentals,_Part_4
